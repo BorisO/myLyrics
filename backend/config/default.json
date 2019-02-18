@@ -1,5 +1,5 @@
 {
   "jwtPrivateKey": "unsecureKey",
-  "db": "",
+  "db": "mongodb://localhost/myLyrics",
   "port": "3900"
 }
