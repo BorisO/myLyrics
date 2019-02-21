@@ -1,3 +1,5 @@
 {
-  "jwtPrivateKey": ""
+  "jwtPrivateKey": "",
+  "spotify_client": "myLyrics_spotify_client",
+  "spotify_secret": "myLyrics_spotify_secret"
 }
