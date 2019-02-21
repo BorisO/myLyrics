@@ -7,6 +7,7 @@ require("./startup/cors")(app);
 require("./startup/routes")(app);
 require("./startup/db")();
 require("./startup/config")();
+require("./startup/joiValidationId")();
 
 const port = process.env.PORT || config.get("port");
 const server = app.listen(port, () =>
