@@ -31,14 +31,17 @@ const userSchema = new mongoose.Schema({
     minlength: 5,
     maxlength: 1024
   },
-  isAdmin: Boolean,
+  isAdmin: {
+    type: Boolean,
+    default: false
+  },
 
   // map of keys for possible multiple music providers
-  // strings will be like spotify_access, spotify_refresh
-  // not sure if best way, might want map of maps?
-  musicProviderKeys: {
+  // map of provider: data object sent when getting tokens.
+  musicProviderTokens: {
     type: Map,
-    of: String
+    of: {},
+    default: {}
   }
 });
 

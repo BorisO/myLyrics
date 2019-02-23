@@ -3,12 +3,13 @@ const router = express.Router();
 const SpotifyWebApi = require("spotify-web-api-node");
 const config = require("config");
 const auth = require("../middleware/auth");
+const { User } = require("../models/user");
 
 router.get("/auth_code", auth, async (req, res) => {
   var scopes = ["user-read-recently-played", "user-read-currently-playing"],
     redirectUri = "http://localhost:3900/api/spotify/spotify_callback",
     clientId = config.get("spotify_client"),
-    state = "some-state-of-my-choice";
+    state = req.user._id;
 
   var spotifyApi = new SpotifyWebApi({
     redirectUri: redirectUri,
@@ -21,8 +22,6 @@ router.get("/auth_code", auth, async (req, res) => {
 });
 
 router.get("/spotify_callback", async (req, res) => {
-  // console.log(req.query.code);
-
   var credentials = {
     clientId: config.get("spotify_client"),
     clientSecret: config.get("spotify_secret"),
@@ -36,20 +35,20 @@ router.get("/spotify_callback", async (req, res) => {
 
   // Retrieve an access token and a refresh token
   spotifyApi.authorizationCodeGrant(code).then(
-    function(data) {
-      console.log("The token expires in " + data.body["expires_in"]);
-      console.log("The access token is " + data.body["access_token"]);
-      console.log("The refresh token is " + data.body["refresh_token"]);
-
+    async function(data) {
       // Set the access token on the API object to use it in later calls
       // spotifyApi.setAccessToken(data.body["access_token"]);
       // spotifyApi.setRefreshToken(data.body["refresh_token"]);
-      tokens = {
-        access_token: data.body["access_token"],
-        refresh_token: data.body["refresh_token"]
-      };
 
-      res.send(tokens);
+      // save data to DB
+
+      userId = req.query.state;
+      let user = await User.findById(userId);
+      if (!user) return res.status(404).send("User with that ID not found");
+      user.musicProviderTokens.set("spotify", data.body);
+      await user.save();
+
+      res.send("Tokens Saved");
     },
     function(err) {
       return res
