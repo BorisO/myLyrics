@@ -67,6 +67,28 @@ router.get("/recently_played/:id", auth, async (req, res) => {
     clientId: config.get("spotify_client"),
     clientSecret: config.get("spotify_secret")
   });
+
+  if (checkRefresh(tokenData)) {
+    let newCreds = await saveNewTokens(tokenData, req.params.id);
+    if (!newCreds) return res.status(400).send("Couldn't save new token.");
+    else {
+      tokenData = newCreds;
+    }
+  }
+
+  spotifyApi.setAccessToken(tokenData.access_token);
+  spotifyApi.setRefreshToken(tokenData.refresh_token);
+
+  // get recently played songs. later need to implent a cursor for more songs
+  spotifyApi.getMyRecentlyPlayedTracks({ limit: 1 }).then(
+    function(data) {
+      res.send(data);
+    },
+    function(err) {
+      logger.error(`Couldn't get recently played tracks: ${err}`);
+      res.status(400).send("Spotify request failed");
+    }
+  );
 });
 
 router.get("/current_playback/:id", auth, async (req, res) => {
