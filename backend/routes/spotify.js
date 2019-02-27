@@ -7,39 +7,39 @@ const { User } = require("../models/user");
 const { logger } = require("../startup/logging");
 const moment = require("moment");
 
-router.get("/auth_code", auth, async (req, res) => {
-  var scopes = ["user-read-recently-played", "user-read-currently-playing"],
+router.get("/auth_code/:id", auth, async (req, res) => {
+  let scopes = ["user-read-recently-played", "user-read-currently-playing"],
     redirectUri = "http://localhost:3900/api/spotify/spotify_callback",
     clientId = config.get("spotify_client"),
-    state = req.user._id;
+    state = req.params.id;
 
-  var spotifyApi = new SpotifyWebApi({
+  let spotifyApi = new SpotifyWebApi({
     redirectUri: redirectUri,
     clientId: clientId
   });
 
-  var authorizeURL = spotifyApi.createAuthorizeURL(scopes, state);
+  let authorizeURL = spotifyApi.createAuthorizeURL(scopes, state);
 
   res.send(authorizeURL);
 });
 
 router.get("/spotify_callback", async (req, res) => {
-  var credentials = {
+  let credentials = {
     clientId: config.get("spotify_client"),
     clientSecret: config.get("spotify_secret"),
     redirectUri: "http://localhost:3900/api/spotify/spotify_callback"
   };
 
-  var spotifyApi = new SpotifyWebApi(credentials);
+  let spotifyApi = new SpotifyWebApi(credentials);
 
   // The code that's returned as a query parameter to the redirect URI
-  var code = req.query.code;
+  let code = req.query.code;
 
   // Retrieve an access token and a refresh token
   spotifyApi.authorizationCodeGrant(code).then(
     async function(data) {
       // save data to DB
-      userId = req.query.state;
+      let userId = req.query.state;
       let user = await User.findById(userId);
       if (!user) return res.status(404).send("User with that ID not found");
 
@@ -58,8 +58,19 @@ router.get("/spotify_callback", async (req, res) => {
   );
 });
 
-router.get("/current_playback", auth, async (req, res) => {
-  let user = await User.findById(req.user._id);
+router.get("/recently_played/:id", auth, async (req, res) => {
+  const user = await User.findById(req.params.id);
+  let tokenData = user.musicProviderTokens.get("spotify");
+
+  // setup spotify api creds
+  let spotifyApi = new SpotifyWebApi({
+    clientId: config.get("spotify_client"),
+    clientSecret: config.get("spotify_secret")
+  });
+});
+
+router.get("/current_playback/:id", auth, async (req, res) => {
+  let user = await User.findById(req.params.id);
   let tokenData = user.musicProviderTokens.get("spotify");
   // setup spotify api creds
   let spotifyApi = new SpotifyWebApi({
@@ -68,9 +79,11 @@ router.get("/current_playback", auth, async (req, res) => {
   });
 
   if (checkRefresh(tokenData)) {
-    // this is black magic that somehow works even though it doesn't return anything. without await
-    // it will break bc of async stuff
-    await saveNewTokens(tokenData, req.user._id);
+    let newCreds = await saveNewTokens(tokenData, req.params.id);
+    if (!newCreds) return res.status(400).send("Couldn't save new token.");
+    else {
+      tokenData = newCreds;
+    }
   }
 
   spotifyApi.setAccessToken(tokenData.access_token);
@@ -108,21 +121,26 @@ function saveNewTokens(tokenData, userId) {
     refreshToken: tokenData.refresh_token
   });
 
-  spotifyApi.refreshAccessToken().then(
-    async function(data) {
-      logger.info(`Access token refreshed for user._id ${userId}`);
-      tokenData.access_token = data.body.access_token;
-      tokenData.time_created = moment().format();
+  return new Promise((resolve, reject) => {
+    spotifyApi.refreshAccessToken().then(
+      async function(data) {
+        logger.info(`Access token refreshed for user._id ${userId}`);
+        tokenData.access_token = data.body.access_token;
+        tokenData.time_created = moment().format();
 
-      // Save the access token
-      let user = await User.findById(userId);
-      user.set("musicProviderTokens.spotify", tokenData);
-      await user.save();
-    },
-    function(err) {
-      logger.error(`Could not refresh access token due to ${err}`);
-    }
-  );
+        // Save the access token
+        let user = await User.findById(userId);
+        user.set("musicProviderTokens.spotify", tokenData);
+        await user.save();
+
+        resolve(tokenData);
+      },
+      function(err) {
+        logger.error(`Could not refresh access token due to ${err}`);
+        reject(err);
+      }
+    );
+  });
 }
 
 module.exports = router;
