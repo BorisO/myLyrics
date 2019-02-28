@@ -1,5 +1,8 @@
 {
   "jwtPrivateKey": "",
   "spotify_client": "myLyrics_spotify_client",
-  "spotify_secret": "myLyrics_spotify_secret"
+  "spotify_secret": "myLyrics_spotify_secret",
+  "genius_client": "myLyrics_genius_client",
+  "genius_secret": "myLyrics_genius_client",
+  "genius_access_token": "myLyrics_genius_access_token"
 }

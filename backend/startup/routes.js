@@ -10,6 +10,6 @@ module.exports = function(app) {
   app.use("/api/users", users);
   app.use("/api/auth", auth);
   app.use("/api/spotify", spotify);
-  // app.use("/api/lyrics", lyrics);
+  app.use("/api/lyrics", lyrics);
   app.use(error);
 };

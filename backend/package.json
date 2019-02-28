@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^3.0.4",
+    "cheerio": "^1.0.0-rc.2",
     "config": "^3.0.1",
     "cors": "^2.8.5",
     "express": "^4.16.4",
@@ -20,6 +21,7 @@
     "lodash": "^4.17.11",
     "moment": "^2.24.0",
     "mongoose": "^5.4.13",
+    "node-fetch": "^2.3.0",
     "spotify-web-api-node": "^4.0.0",
     "winston": "^3.2.1"
   }

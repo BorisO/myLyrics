@@ -2,6 +2,9 @@
   "jwtPrivateKey": "unsecureKey",
   "spotify_client": "",
   "spotify_secret": "",
+  "genius_client": "",
+  "genius_secret": "",
+  "genius_access_token": "",
   "db": "mongodb://localhost/myLyrics",
   "port": "3900",
   "requiresAuth": true
