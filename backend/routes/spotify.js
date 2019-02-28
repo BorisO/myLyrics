@@ -80,9 +80,23 @@ router.get("/recently_played/:id", auth, async (req, res) => {
   spotifyApi.setRefreshToken(tokenData.refresh_token);
 
   // get recently played songs. later need to implent a cursor for more songs
-  spotifyApi.getMyRecentlyPlayedTracks({ limit: 1 }).then(
+  spotifyApi.getMyRecentlyPlayedTracks({ limit: 20 }).then(
     function(data) {
-      res.send(data);
+      let items = data.body.items.map(item => {
+        return {
+          album: {
+            album: item.track.album.name,
+            images: item.track.album.images
+          },
+          artists: {
+            names: item.track.artists.map(a => a.name)
+          },
+          song: {
+            name: item.track.name
+          }
+        };
+      });
+      res.send(items);
     },
     function(err) {
       logger.error(`Couldn't get recently played tracks: ${err}`);
@@ -115,7 +129,18 @@ router.get("/current_playback/:id", auth, async (req, res) => {
   spotifyApi.getMyCurrentPlayingTrack().then(
     function(data) {
       // Output items
-      res.send(data);
+      let album = {
+        name: data.body.item.album.name,
+        images: data.body.item.album.images
+      };
+      let artists = {
+        names: data.body.item.artists.map(a => a.name)
+      };
+      let song = {
+        name: data.body.item.name
+      };
+
+      res.send({ album, artists, song });
     },
     function(err) {
       logger.error(`Couldn't get current playing track: ${err}`);
