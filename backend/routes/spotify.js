@@ -85,7 +85,7 @@ router.get("/recently_played/:id", auth, async (req, res) => {
       let items = data.body.items.map(item => {
         return {
           album: {
-            album: item.track.album.name,
+            name: item.track.album.name,
             images: item.track.album.images
           },
           artists: {
