@@ -35,6 +35,11 @@ class LoginForm extends Form {
     }
   };
 
+  doRegister = () => {
+    let newPath = "/register";
+    this.props.history.push(newPath);
+  };
+
   render() {
     if (auth.getCurrentUser()) return <Redirect to="/" />;
 
@@ -46,7 +51,9 @@ class LoginForm extends Form {
           {this.renderInput("password", "Password", "password")}
           {this.renderButton("Login")}
         </form>
-        <button className="btn btn-secondary mt-2">Register</button>
+        <button className="btn btn-secondary mt-2" onClick={this.doRegister}>
+          Register
+        </button>
       </div>
     );
   }

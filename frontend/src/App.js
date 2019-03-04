@@ -8,6 +8,8 @@ import LoginForm from "./components/loginForm";
 import RegisterForm from "./components/registerForm";
 import Logout from "./components/logout";
 import NotFound from "./components/notFound";
+import ProtectedRoute from "./components/common/protectedRoute";
+import Lyrics from "./components/lyrics";
 
 class App extends Component {
   state = {};
@@ -21,8 +23,8 @@ class App extends Component {
             <Route path="/login" component={LoginForm} />
             <Route path="/register" component={RegisterForm} />
             <Route path="/logout" component={Logout} />
+            <ProtectedRoute path="/" component={Lyrics} />
             <Route path="/not-found" component={NotFound} />
-            {/* <Redirect from="/" exact to="lyrics" /> */}
             <Redirect to="not-found" />
           </Switch>
         </main>
