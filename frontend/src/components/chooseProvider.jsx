@@ -2,18 +2,20 @@ import React, { Component } from "react";
 import ListGroup from "./common/listGroup";
 import auth from "../services/authService";
 import { getAuthCode } from "../services/spotifyService";
-import http from "../services/httpService";
 
 class ChooseProvider extends Component {
   state = {
-    providers: ["spotify", "itunes (future)", "souncloud(future)"],
+    providers: [
+      { name: "spotify" },
+      { name: "itunes (future)" },
+      { name: "souncloud(future)" }
+    ],
     selectedProvider: null
   };
 
   componentDidMount() {
     const user = auth.getCurrentUser();
     this.setState({ user });
-    console.log(user);
   }
 
   handleProviderSelect = provider => {
@@ -21,7 +23,7 @@ class ChooseProvider extends Component {
   };
 
   goToAuth = async () => {
-    switch (this.state.selectedProvider) {
+    switch (this.state.selectedProvider.name) {
       case "spotify":
         let { data: authCode } = await getAuthCode(this.state.user._id);
         window.location = authCode;

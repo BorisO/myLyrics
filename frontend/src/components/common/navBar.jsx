@@ -22,6 +22,9 @@ const NavBar = ({ user }) => {
         <ul className="navbar-nav ml-auto">
           {user && (
             <React.Fragment>
+              <NavLink className="nav-item nav-link" to="/provider">
+                Provider
+              </NavLink>
               <NavLink className="nav-item nav-link" to="/logout">
                 Logout
               </NavLink>

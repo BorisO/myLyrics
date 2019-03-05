@@ -131,6 +131,10 @@ router.get("/current_playback/:id", auth, async (req, res) => {
   // get current song
   spotifyApi.getMyCurrentPlayingTrack().then(
     function(data) {
+      if (data.statusCode !== 200)
+        return res
+          .status(data.statusCode)
+          .send("Error getting curernt playback.");
       // Output items
       let album = {
         name: data.body.item.album.name,
