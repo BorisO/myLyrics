@@ -10,14 +10,24 @@ import Logout from "./components/logout";
 import NotFound from "./components/notFound";
 import ProtectedRoute from "./components/common/protectedRoute";
 import Lyrics from "./components/lyrics";
+import NavBar from "./components/common/navBar";
+import auth from "./services/authService";
 
 class App extends Component {
   state = {};
 
+  componentDidMount() {
+    const user = auth.getCurrentUser();
+    this.setState({ user });
+    console.log(user);
+  }
+
   render() {
+    const { user } = this.state;
     return (
       <React.Fragment>
         <ToastContainer />
+        <NavBar user={user} />
         <main className="container">
           <Switch>
             <Route path="/login" component={LoginForm} />
