@@ -2,8 +2,6 @@ import http from "./httpService";
 
 const apiEndpoint = "/spotify";
 
-function spotifyUrl(id) {
-  return `${apiEndpoint}/${id}`;
+export function getAuthCode(userId) {
+  return http.get(`${apiEndpoint}/auth_code/${userId}`);
 }
-
-export function getAuthCode() {}

@@ -12,6 +12,7 @@ import ProtectedRoute from "./components/common/protectedRoute";
 import Lyrics from "./components/lyrics";
 import NavBar from "./components/common/navBar";
 import auth from "./services/authService";
+import ChooseProvider from "./components/chooseProvider";
 
 class App extends Component {
   state = {};
@@ -19,7 +20,6 @@ class App extends Component {
   componentDidMount() {
     const user = auth.getCurrentUser();
     this.setState({ user });
-    console.log(user);
   }
 
   render() {
@@ -32,9 +32,11 @@ class App extends Component {
           <Switch>
             <Route path="/login" component={LoginForm} />
             <Route path="/register" component={RegisterForm} />
+            <Route path="/provider" component={ChooseProvider} />
             <Route path="/logout" component={Logout} />
-            <ProtectedRoute path="/" component={Lyrics} />
+            <ProtectedRoute path="/spotify" component={Lyrics} />
             <Route path="/not-found" component={NotFound} />
+            <ProtectedRoute from="/" exact to="/provider" />
             <Redirect to="not-found" />
           </Switch>
         </main>

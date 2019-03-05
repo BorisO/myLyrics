@@ -3,6 +3,7 @@ import ListGroup from "./common/listGroup";
 
 class Lyrics extends Component {
   state = {
+    provider: this.props.location.provider,
     recentlyPlayed: {},
     currentPlayback: {},
     selectedSong: {}

@@ -20,6 +20,7 @@ router.get("/auth_code/:id", auth, async (req, res) => {
 
   let authorizeURL = spotifyApi.createAuthorizeURL(scopes, state);
 
+  // res.send(authorizeURL);
   res.send(authorizeURL);
 });
 
@@ -48,7 +49,9 @@ router.get("/spotify_callback", async (req, res) => {
       user.musicProviderTokens.set("spotify", data.body);
       await user.save();
 
-      res.send("Tokens Saved");
+      res.redirect("http://localhost:3000/spotify");
+
+      // res.send("Tokens Saved");
     },
     function(err) {
       return res
