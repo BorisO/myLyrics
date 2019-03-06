@@ -37,10 +37,13 @@ router.get("/", async (req, res) => {
 
   // search genius based on spotify song
   const possibleSongs = await searchForSong(`${artist} ${songName}`);
+  console.log(possibleSongs);
   let resSong = null;
   _.forEach(possibleSongs, item => {
-    if (_.includes(item.name, songName) && _.includes(item.artist, artist))
+    if (_.includes(item.artist, artist)) {
       resSong = item;
+      return false;
+    }
   });
   if (!resSong)
     return res.status(404).send("Can't find song in lyric databse.");
