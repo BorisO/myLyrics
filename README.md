@@ -3,12 +3,15 @@
 ## What it does
 
 This web app will display a list of songs from a music provider. Currently it is only integrated with spotify but can be easily integrated with other providers. Just need to write up an API for it similar to the spotify one.
+
 The songs displayed will be recently played and currently playing. Clicking one one will populate a text area with the lyrics. The lyrics are fetched via the lyric API which is using the genius.com api in the backend for the actual lyrics.
 
 ## Design
 
 Database: MongoDB
+
 Backend: Node.js and the express framework for routing.
+
 Frontend: React.js and react-router-dom for routing.
 
 To use the app, you must register. This is to make it easier to link backend keys required for spotify and others to each user.
