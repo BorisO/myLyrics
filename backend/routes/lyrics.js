@@ -37,7 +37,6 @@ router.get("/", async (req, res) => {
 
   // search genius based on spotify song
   const possibleSongs = await searchForSong(`${artist} ${songName}`);
-  console.log(possibleSongs);
   let resSong = null;
   _.forEach(possibleSongs, item => {
     if (_.includes(item.artist, artist)) {

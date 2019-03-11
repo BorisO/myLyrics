@@ -37,7 +37,6 @@ class Lyrics extends Component {
           recentlyPlayed,
           currentPlayback
         });
-        console.log(this.state.currentPlayback);
         break;
       default:
         alert("This provider doesn't exist.");
@@ -51,8 +50,6 @@ class Lyrics extends Component {
     });
 
     let { data: lyrics } = await getLyricsFromSongObj(q);
-    console.log(typeof lyrics);
-
     this.setState({ selectedSong: song, selectedSongLyrics: lyrics });
   };
 

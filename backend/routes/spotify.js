@@ -20,7 +20,6 @@ router.get("/auth_code/:id", auth, async (req, res) => {
 
   let authorizeURL = spotifyApi.createAuthorizeURL(scopes, state);
 
-  // res.send(authorizeURL);
   res.send(authorizeURL);
 });
 
